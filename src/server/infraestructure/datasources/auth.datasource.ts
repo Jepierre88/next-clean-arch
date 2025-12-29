@@ -25,7 +25,6 @@ export class AuthDataSourceService {
     })
 
 
-    console.log("AuthDataSourceService: login error payload", (await response.clone().json()));
     if (!response.ok) {
       let message = "Error al iniciar sesión";
       try {
