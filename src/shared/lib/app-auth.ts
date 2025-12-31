@@ -1,10 +1,10 @@
-import { betterAuth } from "better-auth";
+import { betterAuth, type BetterAuthOptions, type Session } from "better-auth";
 import { createAuthEndpoint, getSessionFromCtx } from "better-auth/api";
 import { setSessionCookie } from "better-auth/cookies";
-import { bearer } from "better-auth/plugins";
+import { bearer, customSession } from "better-auth/plugins";
 
 import type { ActionResponseEntity } from "@/shared/types/action-response.entity";
-import type { AppSession } from "@/shared/types/app-session.entity";
+import { mergeAppSession, type AppSession } from "@/shared/types/app-session.entity";
 import type { AppUser } from "@/shared/types/app-user.entity";
 import { appSessionAdditionalFields } from "@/shared/types/app-session.entity";
 import { appUserAdditionalFields } from "@/shared/types/app-user.entity";
@@ -66,7 +66,7 @@ export const credentialsSignIn = createAuthEndpoint(
   }
 );
 
-export const auth = betterAuth({
+const options = {
   session: {
     cookieCache: {
       enabled: true,
@@ -79,6 +79,10 @@ export const auth = betterAuth({
   user: {
     additionalFields: appUserAdditionalFields,
   },
+} satisfies BetterAuthOptions;
+
+export const auth = betterAuth({
+  ...options,
   plugins: [
     bearer(),
     {
@@ -87,5 +91,15 @@ export const auth = betterAuth({
         credentialsSignIn,
       },
     },
+
+    // Mantiene el shape exacto que verá el cliente en useSession()/getSession().
+    // Si no tienes campos extra aún, es “no-op”; si los agregas, centraliza defaults.
+    customSession(
+      async ({ user, session }) => {
+        const merged = mergeAppSession(session as Session);
+        return { user, session: merged };
+      },
+      options
+    ),
   ],
 });
