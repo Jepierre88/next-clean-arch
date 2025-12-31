@@ -6,6 +6,8 @@ import { bearer } from "better-auth/plugins";
 import type { ActionResponseEntity } from "@/shared/types/action-response.entity";
 import type { AppSession } from "@/shared/types/app-session.entity";
 import type { AppUser } from "@/shared/types/app-user.entity";
+import { appSessionAdditionalFields } from "@/shared/types/app-session.entity";
+import { appUserAdditionalFields } from "@/shared/types/app-user.entity";
 import { serverContainer } from "@/server/di/server-container";
 import { CredentialsSignInUseCase } from "@/server/domain/usecases/credentials-sign-in.usecase";
 
@@ -72,6 +74,10 @@ export const auth = betterAuth({
       strategy: "jwe",
       refreshCache: true,
     },
+    additionalFields: appSessionAdditionalFields,
+  },
+  user: {
+    additionalFields: appUserAdditionalFields,
   },
   plugins: [
     bearer(),

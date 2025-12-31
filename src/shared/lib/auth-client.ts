@@ -1,4 +1,6 @@
 import { createAuthClient } from "better-auth/react";
+import { inferAdditionalFields } from "better-auth/client/plugins";
+import { auth } from "./app-auth";
 
 export const {
     useSession,
@@ -16,4 +18,7 @@ export const {
       if (t && typeof window !== "undefined") localStorage.setItem("ba", t);
     },
   },
+  plugins: [
+    inferAdditionalFields<typeof auth>(),
+  ],
 });

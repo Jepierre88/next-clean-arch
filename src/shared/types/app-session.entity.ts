@@ -1,4 +1,12 @@
-export type AppSession = {
+import type { DBFieldAttribute, FieldAttributeToObject } from "better-auth/db";
+
+export const appSessionAdditionalFields = {} as const satisfies Record<string, DBFieldAttribute>;
+
+export type AppSessionAdditionalFields = FieldAttributeToObject<
+  typeof appSessionAdditionalFields
+>;
+
+export type AppSessionBase = {
   id: string;
   createdAt: Date;
   updatedAt: Date;
@@ -8,6 +16,8 @@ export type AppSession = {
   ipAddress: string | null;
   userAgent: string | null;
 };
+
+export type AppSession = AppSessionBase & AppSessionAdditionalFields;
 
 // Nota: fecha estable para evitar valores no deterministas al importar el módulo.
 export const appSessionInitialValue: AppSession = {

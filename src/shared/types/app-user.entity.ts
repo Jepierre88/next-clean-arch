@@ -1,4 +1,10 @@
-export type AppUser = {
+import type { DBFieldAttribute, FieldAttributeToObject } from "better-auth/db";
+
+export const appUserAdditionalFields = {} as const satisfies Record<string, DBFieldAttribute>;
+
+export type AppUserAdditionalFields = FieldAttributeToObject<typeof appUserAdditionalFields>;
+
+export type AppUserBase = {
   id: string;
   createdAt: Date;
   updatedAt: Date;
@@ -7,6 +13,8 @@ export type AppUser = {
   name: string;
   image: string | null;
 };
+
+export type AppUser = AppUserBase & AppUserAdditionalFields;
 
 // Nota: fecha estable para evitar valores no deterministas al importar el módulo.
 export const appUserInitialValue: AppUser = {
